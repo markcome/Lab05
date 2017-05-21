@@ -16,7 +16,7 @@ public class ParolaDAO {
 				"FROM parola" + 
 				" WHERE nome = ?";
 		String jdbcURL = "jdbc:mysql://localhost/dizionario?user=root";
-		boolean result = false;
+		boolean result;
 		
 		try {
 			Connection conn = DriverManager.getConnection(jdbcURL);
@@ -28,6 +28,8 @@ public class ParolaDAO {
 			
 			if(rs.next())
 				result = true;
+			else
+				result = false;
 			
 			conn.close();
 			return result;

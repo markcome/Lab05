@@ -32,7 +32,26 @@ public class AnagrammiController {
 
     @FXML
     void doCalcola(ActionEvent event) {
-
+    	
+    	this.txtCorretti.clear();
+    	this.txtErrati.clear();
+    	
+    	this.txtCorretti.setDisable(false);
+    	this.txtErrati.setDisable(false);
+    	this.btnReset.setDisable(false);
+    	
+    	this.txtParola.setEditable(false);
+    	this.txtParola.setDisable(true);
+    	this.btnCalcola.setDisable(true);
+    	
+    	
+    	for (String s: model.getAnagrammiGiusti(this.txtParola.getText().trim())) {
+    		this.txtCorretti.appendText(s + "  ");
+    	}
+    	
+    	for (String s: model.getAnagrammiSbagliati(this.txtParola.getText().trim())) {
+    		this.txtErrati.appendText(s + "  ");
+    	}
     }
 
     @FXML
@@ -41,6 +60,16 @@ public class AnagrammiController {
     	this.txtParola.clear();
     	this.txtCorretti.clear();
     	this.txtErrati.clear();
+    	
+    	this.txtCorretti.setDisable(true);
+    	this.txtErrati.setDisable(true);
+    	this.btnReset.setDisable(true);
+    	
+    	this.txtParola.setEditable(true);
+    	this.txtParola.setDisable(false);
+    	this.btnCalcola.setDisable(false);
+    	
+    	this.model.clear();
     }
     
 

@@ -1,6 +1,7 @@
 package it.polito.tdp.anagrammi.model;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -10,54 +11,67 @@ import it.polito.tdp.anagrammi.DAO.ParolaDAO;
 public class Model {
 
 	private ParolaDAO parolaDao;
-	Set<String> anagrammi;
+	private List<String> giusti;
+	private List<String> sbagliati;
+	private Set<String> anagrammi;
 
 	
 	public Model() {
 		this.parolaDao = new ParolaDAO();
+		this.giusti = new LinkedList<String>();
+		this.sbagliati = new LinkedList<String>();
 		this.anagrammi = new HashSet<String>();
 	}
 	
 	public Set<String> calcolaAnagrammi (String parola) {
+		
 		String parziale = "";
 		recursive(parziale, parola, 0, anagrammi);
-		return anagrammi;
 		
+		// Salvo i rusultati dentro le strutture dati appropriate
+
+		for (String anagramma: anagrammi) {
+			if(this.parolaDao.isCorrect(anagramma)) {
+				giusti.add(anagramma);
+			} else {
+				sbagliati.add(anagramma);
+			}
+		}	
+		return anagrammi;	
 	}
 	
 	// Data una parola devo ritornare gli anagrammi presenti nel vocabolario
 	public List<String> getAnagrammiGiusti (String parola) {
-		List<String> result = new LinkedList<String>();
-		
+
 		// Controllo se ho già popolato "anagrammi"
-		if (anagrammi == null) {
+		Iterator<String> ana = anagrammi.iterator();
+		if (!ana.hasNext()) {
 			this.calcolaAnagrammi(parola);
-		}
-		for (String anagramma: anagrammi) {
-			if(this.parolaDao.isCorrect(anagramma)) {
-				
-			}
-		}
-		
-		return null;	
+		}	
+		return giusti;
 	}
 	
 	// Data una parola devo ritornare gli anagrammi NON presenti nel vocabolario
 	public List<String> getAnagrammiSbagliati (String parola) {
-		// TODO
-		return null;
+		// Controllo se ho già popolato "anagrammi"
+		Iterator<String> ana = anagrammi.iterator();
+		if (!ana.hasNext()) {
+			this.calcolaAnagrammi(parola);
+		}	
+		return sbagliati;
 	}
 	
 	private void recursive(String parziale, String parola, int step, Set<String> anagrammi) {
 		
 		// A: condizione di terminazione
 		if(step == parola.length()){
-			anagrammi.add(parziale);
+			if(parziale.compareTo(parola) != 0)
+				anagrammi.add(parziale);
 			return;			
 		}
 		
 		// B: genera nuova soluzione parziale
-		for(int i = 1; i< parola.length(); i++){
+		for(int i = 0; i< parola.length(); i++){
 			if(charCounter(parziale, parola.charAt(i)) < charCounter(parola, parola.charAt(i))){
 				parziale += parola.charAt(i);
 				recursive(parziale, parola, step+1, anagrammi);
@@ -73,5 +87,11 @@ public class Model {
 				count++;
 		}
 		return count;
+	}
+	
+	public void clear() {
+		this.anagrammi.clear();
+		this.giusti.clear();
+		this.sbagliati.clear();
 	}
 }

@@ -19,7 +19,7 @@ public class Main extends Application {
 			Model model = new Model();
 			controller.setModel(model);
 		
-			Scene scene = new Scene(root,400,400);
+			Scene scene = new Scene(root);
 			primaryStage.setScene(scene);
 			primaryStage.show();
 		} catch(Exception e) {
